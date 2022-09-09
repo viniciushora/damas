@@ -1,5 +1,6 @@
 const tamanhoCelula = 40;
 let pecaId = 0;
+let tabuleiro = [[],[],[],[],[],[],[],[]]
 document.body.append(criaTabuleiro());
 
 function criaTabuleiro() {
@@ -29,12 +30,16 @@ function criaTabuleiro() {
                     peca.id = `b-i${i}-j${j}`
                     celula.append(peca)
                     celula.removeEventListener('dragover', allowDrop)
+                    tabuleiro[i][j] = [celula.id, peca.id]
                 } else if (i * 8 + j >= 40) {
                     const peca = criaPeca('red')
                     peca.id = `r-i${i}-j${j}`
                     peca.draggable = true
                     celula.append(peca)
+                    tabuleiro[i][j] = [celula.id, peca.id]
                     celula.removeEventListener('dragover', allowDrop)
+                } else {
+                    tabuleiro[i].push([celula.id, undefined])
                 }
             } else {
                 celula.style.backgroundColor = 'white';
@@ -67,17 +72,29 @@ function allowDrop(ev) {
 }
 
 function drag(ev) {
-    console.log(ev)
+    const pecas = document.querySelectorAll('.peca')
     ev.dataTransfer.setData("imgid", ev.target.id);
-    ev.dataTransfer.setData("pos", ev.target.id);
 }
 
 function drop(ev) {
     const imgid= ev.dataTransfer.getData("imgid");
     const imagem = document.querySelector(`#${imgid}`)
-    imagem.parentElement.addEventListener('dragover', allowDrop)
-    ev.target.appendChild(imagem);
-    ev.target.removeEventListener('dragover', allowDrop)
-    jogadorDaVez()
+    const pos = ev.dataTransfer.getData("pos");
+    const nPos = ev.target.id
+    let sentido = -1
+    const i1 = Number(pos.charAt(1))
+    const j1 = Number(pos.charAt(4))
+    const i2 = Number(nPos.charAt(1))
+    const j2 = Number(nPos.charAt(4))
+    if (imgid.charAt(0) == "b"){
+        sentido = 1
+    } 
+    if ((i1+sentido==i2) && (j2 == j1+1 || j2 == j1-1)) {
+        imagem.parentElement.addEventListener('dragover', allowDrop)
+        ev.target.appendChild(imagem);
+        ev.target.removeEventListener('dragover', allowDrop)
+        jogadorDaVez()
+    }
 
 }
+
