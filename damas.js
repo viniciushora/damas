@@ -115,18 +115,18 @@ function posiveisJogadas(pecaid){
         }
         if(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1] == 0){
             posJogadas.push(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][0])
-        } else if ((tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][1] == 0 ) && tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1].charAt(0) == contrario[pendulo]){
+        } else if (pos["j"] < 3 && (tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][1] == 0 ) && tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1].charAt(0) == contrario[pendulo]){
             posJogadas.push(["c", tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][0], tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][0]])
         }
     } else if (!isEven(pos["i"])  &&  pos["j"] < 3){
         if(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1] == 0){
             posJogadas.push(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][0])
         } else if ((tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][1] == 0)  && tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1].charAt(0) == contrario[pendulo]){
-            posJogadas.push(["c", tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]-1][0], tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][0]])
+            posJogadas.push(["c", tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][1], tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][0]])
         }
         if(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]+1][1] == 0){
             posJogadas.push(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]+1][0])
-        } else if ((tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][1] == 0) && tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]+1][1].charAt(0) == contrario[pendulo]){
+        } else if ((pos["j"] > 0 && tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][1] == 0) && tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]+1][1].charAt(0) == contrario[pendulo]){
             posJogadas.push(["c", tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][0], tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]+1][0]])
         }
     } else if ((isEven(pos["i"])  &&  pos["j"] == 0) || (!isEven(pos["i"])  &&  pos["j"] == 3)){
