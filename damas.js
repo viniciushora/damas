@@ -2,7 +2,7 @@ const tamanhoCelula = 40;
 let pecaId = 0;
 let tabuleiro = [[],[],[],[],[],[],[],[]]
 let pendulo = 0
-let stack = [null, 0]
+let stack = [0, 0, 0]
 document.body.append(criaTabuleiro());
 
 function criaTabuleiro() {
@@ -113,43 +113,43 @@ function posiveisJogadas(pecaid){
     const sentido = [-1,1]
     const contrario = ["b", "r"]
     if (isEven(pos["i"])  &&  pos["j"] > 0){
-        if(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]-1][1] == 0){
+        if(((pendulo == 0 && pos["i"] > 0) || (pendulo == 1 && pos["i"] < 7 )) && tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]-1][1] == 0){
             posJogadas.push(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]-1][0])
-        } else if ((tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]-1][1] == 0) && typeof tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]-1][1] != "number"){
+        } else if (((pendulo == 0 && pos["i"] > 1) || (pendulo == 1 && pos["i"] < 6 )) && (tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]-1][1] == 0) && typeof tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]-1][1] != "number"){
             if(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]-1][1].charAt(0) == contrario[pendulo]){
                 posJogadas.push(["c", tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]-1][0], tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]-1][0]])
             }
         }
-        if(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1] == 0){
+        if(((pendulo == 0 && pos["i"] > 0) || (pendulo == 1 && pos["i"] < 7 )) && tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1] == 0){
             posJogadas.push(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][0])
-        } else if (pos["j"] < 3 && (tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][1] == 0 ) && typeof tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1] != "number"){
+        } else if (((pendulo == 0 && pos["i"] > 1) || (pendulo == 1 && pos["i"] < 6 )) && pos["j"] < 3 && (tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][1] == 0 ) && typeof tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1] != "number"){
             if (tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1].charAt(0) == contrario[pendulo]) {
                 posJogadas.push(["c", tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][0], tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][0]])
             }
         }
     } else if (!isEven(pos["i"])  &&  pos["j"] < 3){
-        if(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1] == 0){
+        if(((pendulo == 0 && pos["i"] > 0) || (pendulo == 1 && pos["i"] < 7 )) && tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1] == 0){
             posJogadas.push(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][0])
-        } else if (( pos["j"] > 0 && tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]-1][1] == 0)  && typeof tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1] != "number"){
+        } else if (((pendulo == 0 && pos["i"] > 1) || (pendulo == 1 && pos["i"] < 6 )) && (pos["j"] > 0 && tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]-1][1] == 0)  && typeof tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1] != "number"){
             if (tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1].charAt(0) == contrario[pendulo]){
                 posJogadas.push(["c", tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]-1][0], tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][0]])
             }
         }
-        if(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]+1][1] == 0){
+        if(((pendulo == 0 && pos["i"] > 0) || (pendulo == 1 && pos["i"] < 7 )) && tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]+1][1] == 0){
             posJogadas.push(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]+1][0])
-        } else if ((tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][1] == 0) && typeof tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]+1][1] != "number"){
+        } else if (((pendulo == 0 && pos["i"] > 1) || (pendulo == 1 && pos["i"] < 6 )) && (tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][1] == 0) && typeof tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]+1][1] != "number"){
             if(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]+1][1].charAt(0) == contrario[pendulo]){
                 posJogadas.push(["c", tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][0], tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]+1][0]])
             }
         }
     } else if ((isEven(pos["i"])  &&  pos["j"] == 0) || (!isEven(pos["i"])  &&  pos["j"] == 3)){
-        if(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1] == 0){
+        if(((pendulo == 0 && pos["i"] > 0) || (pendulo == 1 && pos["i"] < 7 )) && tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1] == 0){
             posJogadas.push(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][0])
-        } else if (pos["j"] == 0 && (tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][1] == 0) && typeof tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1] != "number"){
+        } else if (((pendulo == 0 && pos["i"] > 1) || (pendulo == 1 && pos["i"] < 6 )) && pos["j"] == 0 && (tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][1] == 0) && typeof tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1] != "number"){
             if(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1].charAt(0) == contrario[pendulo]){
                 posJogadas.push(["c", tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][0], tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][0]])
             }
-        }  else if (pos["j"] == 3 && (tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]-1][1] == 0) && typeof tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1] != "number"){
+        }  else if (((pendulo == 0 && pos["i"] > 1) || (pendulo == 1 && pos["i"] < 6 )) && pos["j"] == 3 && (tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]-1][1] == 0) && typeof tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1] != "number"){
             if (tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1].charAt(0) == contrario[pendulo]){
                 posJogadas.push(["c", tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]-1][0], tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][0]])
             }
@@ -254,15 +254,14 @@ function removerPeca(posicao){
     tabuleiro[posicao["i"]][posicao["j"]][1] = 0
 }
 
-function validaMovimento(mov, posJogadas){
+function validaMovimento(peca, mov, posJogadas){
     for (let i = 0; i < posJogadas.length; i ++){
         if (typeof posJogadas[i] == "string" && mov == posJogadas[i]){
             return true
         } else if (mov == posJogadas[i][1]) {
             const pos = getPosicaoCampo(posJogadas[i][2])
             removerPeca(pos)
-            const imgid= ev.dataTransfer.getData("imgid");
-            stack[0] = imgid
+            stack[0] = peca
             stack[1]++
             return true
         }
@@ -271,29 +270,45 @@ function validaMovimento(mov, posJogadas){
 }
 
 function jogadorDaVez() {
-    if (stack[0] != null){
+    let pecas = null
+    if (stack[0] != 0){
         const posJogadas = posiveisJogadas(stack[0])
-        if (checaCome(posJogadas)){
-            if (pendulo == 0){
-                
+        if (pendulo == 1){
+            inverterPendulo()
+            pecas = pecasCome()
+            if (!checaCome(posJogadas)){
+                desbloqueiaVermelhas()
+                bloqueiaPretas()
+                if (pecas.length > 0){
+                    bloqueiaVermelhas(pecas)
+                }
+                stack[0] = 0
+                stack[1] = 0
+                stack[2] = 0
+            } else {
+                inverterPendulo()
+                bloqueiaVermelhas([stack[0]])
             }
-        }
-        if (pendulo == 0){
-            desbloqueiaVermelhas()
-            bloqueiaPretas()
-            if (pecas.length > 0){
-                bloqueiaVermelhas(pecas)
-            }
-        } else {
-            desbloqueiaPretas()
-            bloqueiaVermelhas()
-            if (pecas.length > 0){
-                bloqueiaPretas(pecas)
+        } else{
+            inverterPendulo()
+            pecas = pecasCome()
+            if (!checaCome(posJogadas)){
+                desbloqueiaPretas()
+                bloqueiaVermelhas()
+                if (pecas.length > 0){
+                    bloqueiaPretas(pecas)
+                }
+                stack[0] = 0
+                stack[1] = 0
+                stack[2] = 0
+            } else {
+                inverterPendulo()
+                bloqueiaPretas([stack[0]])
             }
         }
     } else {
         inverterPendulo()
-        let pecas = pecasCome()
+        pecas = pecasCome()
         if (pendulo == 0){
             desbloqueiaVermelhas()
             bloqueiaPretas()
@@ -315,7 +330,7 @@ function drop(ev) {
     const imagem = document.querySelector(`#${imgid}`)
     let posJogadas = posiveisJogadas(imgid)
     const dropid = ev.target.id
-    if (validaMovimento(dropid, posJogadas)) {
+    if (validaMovimento(imgid, dropid, posJogadas)) {
         const posInicial = getPosicao(imgid)
         const posicaoFinal = getPosicaoCampo(dropid)
         moverPeca(posInicial, posicaoFinal)
