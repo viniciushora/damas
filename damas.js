@@ -2,6 +2,7 @@ const tamanhoCelula = 40;
 let pecaId = 0;
 let tabuleiro = [[],[],[],[],[],[],[],[]]
 let pendulo = 0
+let stack = [null, 0]
 document.body.append(criaTabuleiro());
 
 function criaTabuleiro() {
@@ -58,30 +59,34 @@ function retirarVazios(lista){
     return lista
 }
 
-function jogadorDaVez() {
+function bloqueiaPretas(except=[]) {
     const pecas = document.querySelectorAll('.peca')
     pecas.forEach(peca => {
-        peca.draggable = !peca.draggable
+        (peca.id.charAt(0) == "b" && !except.includes(peca.id)) ?  peca.draggable = false : peca.draggable = peca.draggable ;
     });
 }
 
-function bloqueiaPretas(except=undefined) {
+function bloqueiaVermelhas(except=[]) {
     const pecas = document.querySelectorAll('.peca')
     pecas.forEach(peca => {
-        if (peca.id.charAt(0) == "b" && !except.includes(peca.id)){
-            peca.draggable = false
-        }
+        (peca.id.charAt(0) == "r" && !except.includes(peca.id)) ?  peca.draggable = false : peca.draggable = peca.draggable ;
     });
 }
 
-function bloqueiaVermelhas(except=undefined) {
+function desbloqueiaPretas() {
     const pecas = document.querySelectorAll('.peca')
     pecas.forEach(peca => {
-        if (peca.id.charAt(0) == "r" && !except.includes(peca.id)){
-            peca.draggable = false
-        }
+        (peca.id.charAt(0) == "b" ) ?  peca.draggable = true : peca.draggable = peca.draggable ;
     });
 }
+
+function desbloqueiaVermelhas() {
+    const pecas = document.querySelectorAll('.peca')
+    pecas.forEach(peca => {
+        (peca.id.charAt(0) == "r") ?  peca.draggable = true : peca.draggable = peca.draggable ;
+    });
+}
+
 
 function criaPeca(cor) {
     let imagem = document.createElement('img');
@@ -103,39 +108,51 @@ function drag(ev) {
 }
 
 function posiveisJogadas(pecaid){
-    const pos = getPosicao(pecaid)
-    const posJogadas = []
+    let pos = getPosicao(pecaid)
+    let posJogadas = []
     const sentido = [-1,1]
     const contrario = ["b", "r"]
     if (isEven(pos["i"])  &&  pos["j"] > 0){
         if(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]-1][1] == 0){
             posJogadas.push(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]-1][0])
-        } else if ((tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]-1][1] == 0) && tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]-1][1].charAt(0) == contrario[pendulo]){
-            posJogadas.push(["c", tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]-1][0], tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]-1][0]])
+        } else if ((tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]-1][1] == 0) && typeof tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]-1][1] != "number"){
+            if(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]-1][1].charAt(0) == contrario[pendulo]){
+                posJogadas.push(["c", tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]-1][0], tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]-1][0]])
+            }
         }
         if(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1] == 0){
             posJogadas.push(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][0])
-        } else if (pos["j"] < 3 && (tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][1] == 0 ) && tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1].charAt(0) == contrario[pendulo]){
-            posJogadas.push(["c", tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][0], tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][0]])
+        } else if (pos["j"] < 3 && (tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][1] == 0 ) && typeof tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1] != "number"){
+            if (tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1].charAt(0) == contrario[pendulo]) {
+                posJogadas.push(["c", tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][0], tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][0]])
+            }
         }
     } else if (!isEven(pos["i"])  &&  pos["j"] < 3){
         if(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1] == 0){
             posJogadas.push(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][0])
-        } else if ((tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][1] == 0)  && tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1].charAt(0) == contrario[pendulo]){
-            posJogadas.push(["c", tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][1], tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][0]])
+        } else if (( pos["j"] > 0 && tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]-1][1] == 0)  && typeof tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1] != "number"){
+            if (tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1].charAt(0) == contrario[pendulo]){
+                posJogadas.push(["c", tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]-1][0], tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][0]])
+            }
         }
         if(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]+1][1] == 0){
             posJogadas.push(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]+1][0])
-        } else if ((pos["j"] > 0 && tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][1] == 0) && tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]+1][1].charAt(0) == contrario[pendulo]){
-            posJogadas.push(["c", tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][0], tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]+1][0]])
+        } else if ((tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][1] == 0) && typeof tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]+1][1] != "number"){
+            if(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]+1][1].charAt(0) == contrario[pendulo]){
+                posJogadas.push(["c", tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][0], tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]+1][0]])
+            }
         }
     } else if ((isEven(pos["i"])  &&  pos["j"] == 0) || (!isEven(pos["i"])  &&  pos["j"] == 3)){
         if(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1] == 0){
             posJogadas.push(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][0])
-        } else if (pos["j"] == 0 && (tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][1] == 0) && tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1].charAt(0) == contrario[pendulo]){
-            posJogadas.push(["c", tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][0], tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][0]])
-        }  else if (pos["j"] == 3 && (tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]-1][1] == 0) && tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1].charAt(0) == contrario[pendulo]){
-            posJogadas.push(["c", tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]-1][0], tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][0]])
+        } else if (pos["j"] == 0 && (tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][1] == 0) && typeof tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1] != "number"){
+            if(tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1].charAt(0) == contrario[pendulo]){
+                posJogadas.push(["c", tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]+1][0], tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][0]])
+            }
+        }  else if (pos["j"] == 3 && (tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]-1][1] == 0) && typeof tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1] != "number"){
+            if (tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][1].charAt(0) == contrario[pendulo]){
+                posJogadas.push(["c", tabuleiro[pos["i"]+2*(sentido[pendulo])][pos["j"]-1][0], tabuleiro[pos["i"]+sentido[pendulo]][pos["j"]][0]])
+            }
         }
     }
     if (checaCome(posJogadas)){
@@ -145,22 +162,47 @@ function posiveisJogadas(pecaid){
 }
 
 function somenteCome(posJogadas){
-    for (let i = 0; i < posJogadas.length; i ++){
-        if (typeof posJogadas[i] != "array"){
-            delete posJogadas[i]
-            i = i - 1
+    let posJogadas2 = []
+    for (let i = 0;  i < posJogadas.length; i ++){
+        if (Array.isArray(posJogadas[i])){
+            posJogadas2.push(posJogadas[i])
         }
     }
-    return posJogadas
+    return posJogadas2
 }
 
 function checaCome(posJogadas){
     for (let i = 0; i < posJogadas.length; i ++){
-        if (typeof posJogadas[i]== "array"){
+        if (Array.isArray(posJogadas[i])){
             return true
         }
     }
     return false
+}
+
+function percorrePecas(cor){
+    let pecas = []
+    for (let i = 0; i < tabuleiro.length; i++){
+        for (let j = 0; j < tabuleiro[i].length; j ++){
+            if (tabuleiro[i][j][1] != 0 && tabuleiro[i][j][1].charAt(0) == cor){
+                pecas.push(tabuleiro[i][j][1])
+            }
+        }
+    }
+    return pecas
+}
+
+function pecasCome(){
+    const pecas = []
+    const cor = ["r", "b"]
+    let pecasCor = percorrePecas(cor[pendulo])
+    for (let i = 0; i < pecasCor.length; i++){
+        const posJogadas = posiveisJogadas(pecasCor[i])
+        if (checaCome(posJogadas)){
+            pecas.push(pecasCor[i])
+        }
+    }
+    return pecas
 }
 
 function isEven(value) {
@@ -219,16 +261,59 @@ function validaMovimento(mov, posJogadas){
         } else if (mov == posJogadas[i][1]) {
             const pos = getPosicaoCampo(posJogadas[i][2])
             removerPeca(pos)
+            const imgid= ev.dataTransfer.getData("imgid");
+            stack[0] = imgid
+            stack[1]++
             return true
         }
     }
     return false
 }
 
+function jogadorDaVez() {
+    if (stack[0] != null){
+        const posJogadas = posiveisJogadas(stack[0])
+        if (checaCome(posJogadas)){
+            if (pendulo == 0){
+                
+            }
+        }
+        if (pendulo == 0){
+            desbloqueiaVermelhas()
+            bloqueiaPretas()
+            if (pecas.length > 0){
+                bloqueiaVermelhas(pecas)
+            }
+        } else {
+            desbloqueiaPretas()
+            bloqueiaVermelhas()
+            if (pecas.length > 0){
+                bloqueiaPretas(pecas)
+            }
+        }
+    } else {
+        inverterPendulo()
+        let pecas = pecasCome()
+        if (pendulo == 0){
+            desbloqueiaVermelhas()
+            bloqueiaPretas()
+            if (pecas.length > 0){
+                bloqueiaVermelhas(pecas)
+            }
+        } else {
+            desbloqueiaPretas()
+            bloqueiaVermelhas()
+            if (pecas.length > 0){
+                bloqueiaPretas(pecas)
+            }
+        }
+    }
+}
+
 function drop(ev) {
     const imgid= ev.dataTransfer.getData("imgid");
     const imagem = document.querySelector(`#${imgid}`)
-    const posJogadas = posiveisJogadas(imgid)
+    let posJogadas = posiveisJogadas(imgid)
     const dropid = ev.target.id
     if (validaMovimento(dropid, posJogadas)) {
         const posInicial = getPosicao(imgid)
@@ -237,7 +322,6 @@ function drop(ev) {
         imagem.parentElement.addEventListener('dragover', allowDrop)
         ev.target.appendChild(imagem);
         ev.target.removeEventListener('dragover', allowDrop)
-        inverterPendulo()
         jogadorDaVez()
     }
 }
