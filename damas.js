@@ -263,16 +263,89 @@ function validaMovimento(peca, mov, posJogadas){
             removerPeca(pos)
             stack[0] = peca
             stack[1]++
+            if (stack[1] == 1){
+                stack[2] = proximoCome(peca, posJogadas[i][1])
+            } else {
+                stack[2] = 0
+            }
             return true
         }
     }
     return false
 }
 
+function getCampo(peca){
+    for (let i = 0; i < tabuleiro.length; i++){
+        for (let j = 0; j < tabuleiro[i].length; j++){
+            if(tabuleiro[i][j][1] == peca){
+                return tabuleiro[i][j][0]
+            }
+        }
+    }
+    return false
+}
+
+function proximoCome(peca, campo2){
+    const campo1 = getCampo(peca)
+    const j1 = Number(campo1.charAt(4))
+    const i2 = Number(campo2.charAt(1))
+    const j2 = Number(campo2.charAt(4))
+    let i = 0
+    if (pendulo == 0) {
+        i = i2 - 2
+    } else {
+        i = i2 + 2
+    }
+    const j = j2 + Math.abs(j2 - j1)
+    const pCampo = 'i' + i + '-j' + j
+    return pCampo
+}
+
+function removeCome(campo, posJogadas){
+    let posJogadas2 = []
+    for (let i = 0; i < posJogadas.length; i++){
+        if(posJogadas[i][1] != campo){
+            posJogadas2.push(posJogadas[i])
+        }
+    }
+    return posJogadas2
+}
+
+function promoverpDama(){
+    for(let i = 0; i < tabuleiro.length; i++){
+        for(let j = 0; j < tabuleiro[i].length; j++){
+            if (tabuleiro[i][j][1] != 0){
+                if(i==0 && tabuleiro[i][j][1].charAt(0) == "r" && !ehDama(tabuleiro[i][j][1])){
+                    const peca = document.querySelector(`#${tabuleiro[i][j][1]}`)
+                    tabuleiro[i][j][1] = tabuleiro[i][j][1] + "d"
+                    peca.id = tabuleiro[i][j][1]
+                    peca.setAttribute('src', `img/red_dama.png`);
+                }  else if (i==7 && tabuleiro[i][j][1].charAt(0) == "b" && !ehDama(tabuleiro[i][j][1])){
+                    const peca = document.querySelector(`#${tabuleiro[i][j][1]}`)
+                    tabuleiro[i][j][1] = tabuleiro[i][j][1] + "d"
+                    peca.id = tabuleiro[i][j][1]
+                    peca.setAttribute('src', `img/black_dama.png`);
+                }
+            }
+        }
+    }
+}
+
+function ehDama(peca){
+    if (peca.charAt(peca.length -1) == "d"){
+        return true
+    } else {
+        return false
+    }
+}
+
 function jogadorDaVez() {
     let pecas = null
     if (stack[0] != 0){
-        const posJogadas = posiveisJogadas(stack[0])
+        let posJogadas = posiveisJogadas(stack[0])
+        if (stack[2] != 0){
+            posJogadas = removeCome(stack[2], posJogadas)
+        }
         if (pendulo == 1){
             inverterPendulo()
             pecas = pecasCome()
@@ -323,6 +396,7 @@ function jogadorDaVez() {
             }
         }
     }
+    promoverpDama()
 }
 
 function drop(ev) {
