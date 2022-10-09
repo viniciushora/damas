@@ -172,19 +172,19 @@ function posiveisJogadasDama(pecaid){
     let pos = getPosicao(pecaid)
     let posJogadas = []
     if (pos["i"] != 0){
-        if (pos["j"] > 0){
-            posJogadas = diagonal(pos, posJogadas, 1)
-        } 
-        if (pos["j"] < 7){
+        if (pos["j"] > 0 || !isEven(pos["i"])){
             posJogadas = diagonal(pos, posJogadas, 0)
+        } 
+        if (pos["j"] < 7 || isEven(pos["i"])){
+            posJogadas = diagonal(pos, posJogadas, 1)
         }
     }
     if (pos["i"] != 7){
-        if (pos["j"] > 0){
-            posJogadas = diagonal(pos, posJogadas, 3)
-        } 
-        if (pos["j"] < 7){
+        if (pos["j"] > 0 || !isEven(pos["i"])){
             posJogadas = diagonal(pos, posJogadas, 2)
+        } 
+        if (pos["j"] < 7 || isEven(pos["i"])){
+            posJogadas = diagonal(pos, posJogadas, 3)
         }
     }
     if (checaCome(posJogadas)){
