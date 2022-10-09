@@ -190,7 +190,6 @@ function posiveisJogadasDama(pecaid){
     if (checaCome(posJogadas)){
         posJogadas = somenteCome(posJogadas)
     }
-    console.log(posJogadas)
     return posJogadas
 }
 
@@ -204,7 +203,6 @@ function diagonal(pos, posJogadas, tipo){
         j = j + tipoJ[tipo]
     } 
     i = i + tipoI[tipo]
-    console.log(tipo)
     while (i!=8 && i != -1 &&  j!=4 && j!=-1){
         console.log(i,j)
         if (tabuleiro[i][j][1] == 0){
